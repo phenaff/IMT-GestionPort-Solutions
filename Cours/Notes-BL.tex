@@ -1,0 +1,423 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{lmodern}
+\usepackage{amsmath}
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+  \usepackage{amssymb}
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={Black-Litterman},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage[utf8]{inputenc}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
+\ifluatex
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+
+\title{Black-Litterman}
+\usepackage{etoolbox}
+\makeatletter
+\providecommand{\subtitle}[1]{% add subtitle to \maketitle
+  \apptocmd{\@title}{\par {\large #1 \par}}{}{}
+}
+\makeatother
+\subtitle{The intuition behind Black-Litterman model portfolios}
+\author{}
+\date{\vspace{-2.5em}Février-Mars 2020}
+
+\begin{document}
+\maketitle
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(xts)}
+\FunctionTok{library}\NormalTok{(hornpa)}
+\FunctionTok{library}\NormalTok{(lubridate)}
+\FunctionTok{library}\NormalTok{(xtable)}
+\FunctionTok{library}\NormalTok{(PerformanceAnalytics)}
+\FunctionTok{library}\NormalTok{(TTR)}
+\FunctionTok{library}\NormalTok{(lubridate)}
+\FunctionTok{library}\NormalTok{(roll)}
+\FunctionTok{library}\NormalTok{(Hmisc)}
+\FunctionTok{library}\NormalTok{(nFactors)}
+\FunctionTok{library}\NormalTok{(kableExtra)}
+\FunctionTok{library}\NormalTok{(broom)}
+\FunctionTok{library}\NormalTok{(quadprog)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{principle}{%
+\section{Principle}\label{principle}}
+
+Bayesian approach:
+
+\begin{itemize}
+\tightlist
+\item
+  The expected returns are random variables
+\item
+  CAPM equilibrium distribution as prior
+\item
+  additional probabilistic views combined with prior to get posterior
+  distribution of expected return.
+\end{itemize}
+
+Distribution of asset returns:
+
+\[
+r \sim \mathcal{N}(\mu, \Sigma)
+\]
+
+Assume quadratic utility function:
+
+\[
+U(w) = w^T \Pi - \frac{\delta}{2} w^T \Sigma w
+\] Solve first order conditions for optimality to get
+
+\[
+\Pi = \delta \Sigma w_{eq}
+\]
+
+The expected return \(\mu\) is also a random variable. The bayesian
+prior is such that \[
+\mu = \Pi + \epsilon^{(e)}
+\] with \[
+\epsilon^{(e)} \sim \mathcal{N}(0, \tau \Sigma)
+\] where \(\tau\) is a scalar.
+
+Views are expressed as portfolios whose returns are independent random
+normal variables.
+
+\[
+P \mu = Q + \epsilon^{(v)}
+\] with \[
+\epsilon^{(v)} \sim \mathcal{N}(0, \Omega)
+\]
+
+\hypertarget{posterior-distribution}{%
+\section{Posterior distribution}\label{posterior-distribution}}
+
+\hypertarget{gls-linear-model}{%
+\subsection{GLS linear model}\label{gls-linear-model}}
+
+Consider the linear model \[
+Y = X \beta + E
+\] with \(\textrm{Cov}(E|X) = \Omega\)
+
+\[
+\hat{\beta} = (X^T \Omega^{-1}X)^{-1} X^T \Omega^{-1} Y
+\]
+
+\hypertarget{theils-estimatiom-method-for-posterior-distribution}{%
+\subsection{Theil's estimatiom method for posterior
+distribution}\label{theils-estimatiom-method-for-posterior-distribution}}
+
+Prior distribution for return \[
+\Pi = I \mu + \epsilon^{(e)}
+\] Additional information: \[
+Q = P \mu + \epsilon^{(v)}
+\] Combine two equations: \[
+\begin{bmatrix}
+\Pi \\ 
+Q
+\end{bmatrix}
+ = 
+\begin{bmatrix}
+I \\ 
+P
+\end{bmatrix}
+\mu + 
+\begin{bmatrix}
+\epsilon^{(e)} \\ 
+\epsilon^{(v)}  
+\end{bmatrix}
+\] Apply GLS:
+
+\def\O{
+\begin{bmatrix}
+\tau \Sigma & \\
+& \Omega
+\end{bmatrix}
+}
+
+\def\X{
+\begin{bmatrix}
+I \\ 
+P
+\end{bmatrix}
+}
+
+\[
+\mu^* = \left( 
+\begin{bmatrix}
+I \\ 
+P
+\end{bmatrix}
+^T 
+\begin{bmatrix}
+\tau \Sigma & \\
+& \Omega
+\end{bmatrix}
+^{-1} 
+\begin{bmatrix}
+I \\ 
+P
+\end{bmatrix}
+\right)^{-1}
+\begin{bmatrix}
+I \\ 
+P
+\end{bmatrix}
+^T
+\begin{bmatrix}
+\tau \Sigma & \\
+& \Omega
+\end{bmatrix}
+^{-1} \begin{bmatrix}
+\Pi \\ 
+Q
+\end{bmatrix}
+\]
+
+After algebraic manipulations:
+
+Posterior mean of expected returns:
+
+\[
+\mu^* = \left[ (\tau \Sigma)^{-1} + P^T\Omega^{-1} P \right]^{-1} \left[ (\tau \Sigma)^{-1} \Pi + P^T\Omega^{-1} Q \right]
+\]
+
+Posterior covariance of expected returns:
+
+\[
+M^{-1} = \left[ (\tau \Sigma)^{-1} + P^T\Omega^{-1} P \right]^{-1}
+\] Consequence: the posterior distribution of returns is \[
+r \sim \mathcal{N}(\mu^*, \Sigma^*)
+\] with \(\Sigma^* = \Sigma + M^{-1}\).
+
+\hypertarget{portfolio-optimization}{%
+\section{Portfolio optimization}\label{portfolio-optimization}}
+
+One can now find the optimal weights by solving the classical
+mean-variance problem:
+
+\[
+    \mbox{max} \   w^T\mu^*  - \frac{\delta}{2} w^T \Sigma^* w  \\
+\]
+
+the solution being: \[
+w^* = \frac{1}{\delta} \Sigma^{*-1} \mu^*
+\] See paper by He and Litterman for various manipulations of this last
+equation.
+
+\hypertarget{calculation}{%
+\subsection{Calculation}\label{calculation}}
+
+Code freely adapted from
+\url{https://github.com/systematicinvestor/SIT}, but using the notation
+of the paper.
+
+Market data from He \& Litterman:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{ data }\OtherTok{=}
+\StringTok{\textquotesingle{}1,0.4880,0.4780,0.5150,0.4390,0.5120,0.4910}
+\StringTok{ 0.4880,1,0.6640,0.6550,0.3100,0.6080,0.7790}
+\StringTok{ 0.4780,0.6640,1,0.8610,0.3550,0.7830,0.6680}
+\StringTok{ 0.5150,0.6550,0.8610,1,0.3540,0.7770,0.6530}
+\StringTok{ 0.4390,0.3100,0.3550,0.3540,1,0.4050,0.3060}
+\StringTok{ 0.5120,0.6080,0.7830,0.7770,0.4050,1,0.6520}
+\StringTok{ 0.4910,0.7790,0.6680,0.6530,0.3060,0.6520,1\textquotesingle{}}
+  
+\NormalTok{  Corrmat }\OtherTok{=} \FunctionTok{matrix}\NormalTok{( }\FunctionTok{as.double}\NormalTok{(}\FunctionTok{spl}\NormalTok{( }\FunctionTok{gsub}\NormalTok{(}\StringTok{\textquotesingle{}}\SpecialCharTok{\textbackslash{}n}\StringTok{\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{},\textquotesingle{}}\NormalTok{, data), }\StringTok{\textquotesingle{},\textquotesingle{}}\NormalTok{)), }
+                    \AttributeTok{nrow =} \FunctionTok{length}\NormalTok{(}\FunctionTok{spl}\NormalTok{(data, }\StringTok{\textquotesingle{}}\SpecialCharTok{\textbackslash{}n}\StringTok{\textquotesingle{}}\NormalTok{)), }\AttributeTok{byrow=}\ConstantTok{TRUE}\NormalTok{)}
+  
+\NormalTok{  stdevs }\OtherTok{=} \FunctionTok{c}\NormalTok{(}\FloatTok{16.0}\NormalTok{, }\FloatTok{20.3}\NormalTok{, }\FloatTok{24.8}\NormalTok{, }\FloatTok{27.1}\NormalTok{, }\FloatTok{21.0}\NormalTok{,  }\FloatTok{20.0}\NormalTok{, }\FloatTok{18.7}\NormalTok{)}\SpecialCharTok{/}\DecValTok{100}
+\NormalTok{  w.eq }\OtherTok{=} \FunctionTok{c}\NormalTok{(}\FloatTok{1.6}\NormalTok{, }\FloatTok{2.2}\NormalTok{, }\FloatTok{5.2}\NormalTok{, }\FloatTok{5.5}\NormalTok{, }\FloatTok{11.6}\NormalTok{, }\FloatTok{12.4}\NormalTok{, }\FloatTok{61.5}\NormalTok{)}\SpecialCharTok{/}\DecValTok{100}
+  \CommentTok{\# Prior covariance of returns}
+\NormalTok{  Sigma }\OtherTok{=}\NormalTok{ Corrmat }\SpecialCharTok{*}\NormalTok{ (stdevs }\SpecialCharTok{\%*\%} \FunctionTok{t}\NormalTok{(stdevs))}
+\end{Highlighting}
+\end{Shaded}
+
+Equilibrium risk premium
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# risk aversion parameter}
+\NormalTok{delta }\OtherTok{=} \FloatTok{2.5}
+\NormalTok{Pi }\OtherTok{=}\NormalTok{ delta }\SpecialCharTok{*}\NormalTok{ Sigma }\SpecialCharTok{\%*\%}\NormalTok{ w.eq}
+\end{Highlighting}
+\end{Shaded}
+
+Summary market data
+
+\begin{tabular}{llll}
+\toprule
+Assets & Std Dev & Weq & PI\\
+\midrule
+Australia & 16 & 1.6 & 3.9\\
+Canada & 20.3 & 2.2 & 6.9\\
+France & 24.8 & 5.2 & 8.4\\
+Germany & 27.1 & 5.5 & 9\\
+Japan & 21 & 11.6 & 4.3\\
+\addlinespace
+UK & 20 & 12.4 & 6.8\\
+USA & 18.7 & 61.5 & 7.6\\
+\bottomrule
+\end{tabular}
+
+\hypertarget{view-1-is-the-german-equity-market-will-outperform-the-rest-of-european-markets-by-5-a-year.}{%
+\subsection{View 1: is The German equity market will outperform the rest
+of European Markets by 5\% a
+year.}\label{view-1-is-the-german-equity-market-will-outperform-the-rest-of-european-markets-by-5-a-year.}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{P }\OtherTok{=} \FunctionTok{matrix}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, }\SpecialCharTok{{-}}\FloatTok{29.5}\NormalTok{, }\DecValTok{100}\NormalTok{, }\DecValTok{0}\NormalTok{, }\SpecialCharTok{{-}}\FloatTok{70.5}\NormalTok{, }\DecValTok{0}\NormalTok{)}\SpecialCharTok{/}\DecValTok{100}\NormalTok{, }\AttributeTok{nrow=}\DecValTok{1}\NormalTok{)}
+\NormalTok{Q }\OtherTok{=} \DecValTok{5}\SpecialCharTok{/}\DecValTok{100}
+\NormalTok{tau }\OtherTok{=} \FloatTok{0.05}
+
+\NormalTok{Omega }\OtherTok{=} \FunctionTok{as.matrix}\NormalTok{(}\FunctionTok{diag}\NormalTok{(tau }\SpecialCharTok{*}\NormalTok{ P }\SpecialCharTok{\%*\%}\NormalTok{ Sigma }\SpecialCharTok{\%*\%} \FunctionTok{t}\NormalTok{(P)))}
+\NormalTok{tau.Sigma.inv }\OtherTok{=} \FunctionTok{solve}\NormalTok{(tau}\SpecialCharTok{*}\NormalTok{Sigma)}
+\NormalTok{M.inverse }\OtherTok{=} \FunctionTok{solve}\NormalTok{(tau.Sigma.inv }\SpecialCharTok{+}\NormalTok{ (}\FunctionTok{t}\NormalTok{(P) }\SpecialCharTok{\%*\%} \FunctionTok{solve}\NormalTok{(Omega) }\SpecialCharTok{\%*\%}\NormalTok{ P))}
+\NormalTok{mu.bar }\OtherTok{=}\NormalTok{ M.inverse }\SpecialCharTok{\%*\%}\NormalTok{ (tau.Sigma.inv }\SpecialCharTok{\%*\%}\NormalTok{ Pi }\SpecialCharTok{+} \FunctionTok{t}\NormalTok{(P) }\SpecialCharTok{\%*\%} \FunctionTok{solve}\NormalTok{(Omega) }\SpecialCharTok{\%*\%}\NormalTok{ Q)}
+\NormalTok{Sigma.bar }\OtherTok{=}\NormalTok{ M.inverse }\SpecialCharTok{+}\NormalTok{ Sigma}
+
+\NormalTok{w.star }\OtherTok{=}\NormalTok{ (}\DecValTok{1}\SpecialCharTok{/}\NormalTok{delta) }\SpecialCharTok{*} \FunctionTok{solve}\NormalTok{(Sigma.bar) }\SpecialCharTok{\%*\%}\NormalTok{ mu.bar}
+
+\NormalTok{df }\OtherTok{=} \FunctionTok{data.frame}\NormalTok{(}\DecValTok{100}\SpecialCharTok{*}\FunctionTok{cbind}\NormalTok{(}\FunctionTok{t}\NormalTok{(P), mu.bar, w.star, w.star}\SpecialCharTok{{-}}\NormalTok{w.eq}\SpecialCharTok{/}\NormalTok{(}\DecValTok{1}\SpecialCharTok{+}\NormalTok{tau)))}
+\FunctionTok{row.names}\NormalTok{(df) }\OtherTok{=}\NormalTok{ AssetNames}
+\FunctionTok{names}\NormalTok{(df) }\OtherTok{=}  \FunctionTok{c}\NormalTok{(}\StringTok{\textquotesingle{}P\textquotesingle{}}\NormalTok{, }\StringTok{"$}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{bar\{}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{mu\}$"}\NormalTok{, }\StringTok{\textquotesingle{}$w\^{}*$\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}$w\^{}* {-} }\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{frac\{W\_\{eq\}\}\{1+}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{tau\}$\textquotesingle{}}\NormalTok{)}
+\FunctionTok{kable}\NormalTok{(df, }\AttributeTok{digits =} \DecValTok{1}\NormalTok{, }\AttributeTok{format=}\StringTok{"latex"}\NormalTok{, }\AttributeTok{booktabs=}\NormalTok{T, }\AttributeTok{escape=}\NormalTok{F,}
+      \AttributeTok{caption=}\StringTok{"Solution with View 1. P: view matrix, $}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{bar\{}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{mu\}$: ex{-}post expected return,}
+\StringTok{      $w\^{}*$: optimal weights, $}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{frac\{W\_\{eq\}\}\{1+}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{tau\}$: scaled equilibrium weights"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{table}
+
+\caption{\label{tab:unnamed-chunk-5}Solution with View 1. P: view matrix, $\bar{\mu}$: ex-post expected return,
+      $w^*$: optimal weights, $\frac{W_{eq}}{1+\tau}$: scaled equilibrium weights}
+\centering
+\begin{tabular}[t]{lrrrr}
+\toprule
+  & P & $\bar{\mu}$ & $w^*$ & $w^* - \frac{W_{eq}}{1+\tau}$\\
+\midrule
+Australia & 0.0 & 4.3 & 1.5 & 0.0\\
+Canada & 0.0 & 7.6 & 2.1 & 0.0\\
+France & -29.5 & 9.3 & -3.9 & -8.9\\
+Germany & 100.0 & 11.0 & 35.4 & 30.2\\
+Japan & 0.0 & 4.5 & 11.0 & 0.0\\
+\addlinespace
+UK & -70.5 & 7.0 & -9.5 & -21.3\\
+USA & 0.0 & 8.1 & 58.6 & 0.0\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\end{document}
