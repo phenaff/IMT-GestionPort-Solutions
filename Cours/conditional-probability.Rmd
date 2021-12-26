@@ -1,16 +1,18 @@
 ---
 title: "Conditional Probability and Volatility Clustering"
 author: "Patrick Hénaff"
-date: "Feb 2021"
+date: "Version: `r format(Sys.Date(), '%d %b %Y')`"
+
 output:
-  bookdown::pdf_document2:
-    toc: false
+  pdf_document:
+    toc: no
     keep_tex: yes
     fig_caption: yes
     latex_engine: pdflatex
-csl: ../apa.csl
+
+csl: ../../apa.csl
 geometry: margin=1in
-bibliography: ../library.bib
+bibliography: ../../library.bib
 email: pa.henaff@gmail.com
 fontfamily: mathpazo
 fontsize: 11pt

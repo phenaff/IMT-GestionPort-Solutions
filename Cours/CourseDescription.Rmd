@@ -15,7 +15,7 @@ nocite: |
 
 title: "Gestion de Portefeuille"
 author: Patrick Hénaff
-date: "Février-Mars 2022"
+date: "Version: `r format(Sys.Date(), '%d %b %Y')`"
 email: "pa.henaff@gmail.com"
 
 fontfamily: mathpazo
@@ -31,8 +31,6 @@ knitr::opts_chunk$set(fig.path='figs/')
 knitr::opts_chunk$set(cache.path='_cache/')
 knitr::opts_chunk$set(warning=F, message=F)
 ```
-
-# Description du cours
 
 Les conditions de marché actuelles rendent particulièrement pertinentes les méthodes quantitatives de gestion de portefeuille. Dans le contexte Français, la baisse des taux met en cause la viabilité des fonds en euros des contrats d'assurance-vie, un des piliers de l'épargne des Français. Un objectif de ce cours sera de montrer comment la gestion quantitative peut apporter un élément de réponse à ce problème.
 
