@@ -1,7 +1,8 @@
 ---
 title: "Financial Time Series"
 author: "P. Hénaff"
-date: "Feb 2021"
+date: "Version: `r format(Sys.Date(), '%d %b %Y')`"
+
 output:
   beamer_presentation:
     colortheme: dolphin
@@ -194,7 +195,7 @@ plot.cum.cond.r(r=r.AMZN, ticker = ticker, sgn='all',NBIN=nb, model='abs', param
 The Johnson family of distributions is formed by various transformations
 of the normal density. Let $X$ be the observed data, an define $Z$ by:
 
-$$Z = \gamma + \delta \ln \left( g \left( \frac{x-\xi}{\lambda} \right) \right)$$
+$$Z = \gamma + \delta \ln \left( g \left( \frac{X-\xi}{\lambda} \right) \right)$$
 
 where: $$g(u) = \left\{ \begin{array}{ll}
 u & SL \\
