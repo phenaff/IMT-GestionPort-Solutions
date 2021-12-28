@@ -84,16 +84,6 @@
 \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
 \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
 \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
-\usepackage{longtable,booktabs}
-\usepackage{calc} % for calculating minipage widths
-% Correct order of tables after \paragraph or \subparagraph
-\usepackage{etoolbox}
-\makeatletter
-\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
-\makeatother
-% Allow footnotes in longtable head/foot
-\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
-\makesavenoteenv{longtable}
 \usepackage{graphicx}
 \makeatletter
 \def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
@@ -110,7 +100,7 @@
 \setlength{\emergencystretch}{3em} % prevent overfull lines
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
-\setcounter{secnumdepth}{5}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
 \linespread{1.05}
 \usepackage[utf8]{inputenc}
 \usepackage{amsthm}
@@ -142,20 +132,26 @@
 
 \title{Conditional Probability and Volatility Clustering}
 \author{Patrick Hénaff}
-\date{Feb 2021}
+\date{Version: 26 déc. 2021}
 
 \begin{document}
 \maketitle
 
-The purpose of this note is to reproduce and comment some results on the conditional distribution of returns, presented by K. Chen \emph{et al} in (Chen et al., 2008). We provide the code and data to reproduce the calculations presented in the paper, and are able to reproduce its figures. We however show that the advocated model does not fully account for the ``volatility clustering,'' an important stylized fact of financial time series.
+The purpose of this note is to reproduce and comment some results on the
+conditional distribution of returns, presented by K. Chen \emph{et al}
+in (Chen et al., 2008). We provide the code and data to reproduce the
+calculations presented in the paper, and are able to reproduce its
+figures. We however show that the advocated model does not fully account
+for the ``volatility clustering,'' an important stylized fact of
+financial time series.
 
 \hypertarget{sec:fts}{%
 \section{Characteristics of Financial Time Series}\label{sec:fts}}
 
 The characteristic features of financial time series have been
 extensively documented (Cont, 2001). As mentioned, a distribution of
-returns with "fat tails", and volatility clustering are the key
-aspects of these series. (Chen et al., 2008) shows that for many financial time
+returns with "fat tails", and volatility clustering are the key aspects
+of these series. (Chen et al., 2008) shows that for many financial time
 series, the return at any time scale is, beyond some threshold,
 distributed according to a power law. The parameters of this power law
 depend upon the magnitude of return in the previous period (this is the
@@ -164,17 +160,15 @@ conditionally to the magnitude of the previous period return, the
 distribution is found to follow a universal form, asymmetrical and with
 fat tails.
 
-Let \(\{r\}\) be a series of returns, computed at intervals \(\Delta t\).
-Following Chen's notation, the values of \(r\) are binned according to
-\(r_p\), the magnitude of return in the previous period. The standard
-deviation of each bin is \(w(r_p)\). the distribution of return,
-conditional upon the magnitude of the previous return, can be expressed
-as:
-\begin{equation}
+Let \(\{r\}\) be a series of returns, computed at intervals
+\(\Delta t\). Following Chen's notation, the values of \(r\) are binned
+according to \(r_p\), the magnitude of return in the previous period.
+The standard deviation of each bin is \(w(r_p)\). the distribution of
+return, conditional upon the magnitude of the previous return, can be
+expressed as: \begin{equation}
 P(r | r_p) = \frac{1}{w(r_p)} f \left( \frac{r}{w(r_p)} \right)
 \label{eq:cond-dist}
-\end{equation}
-with:
+\end{equation} with:
 
 \begin{description}
 \item[\(r\)]
@@ -192,9 +186,9 @@ It follows that the joint distribution of \(r\) and \(r_p\) given by
 (fat tails, asymmetry) and the conditional variance (volatility
 clustering).
 
-Numerous studies (Gopikrishnan et al., 1998) have
-documented that the cumulative distribution of returns, beyond some
-threshold, can be described by a power law, that is, in the notation of
+Numerous studies (Gopikrishnan et al., 1998) have documented that the
+cumulative distribution of returns, beyond some threshold, can be
+described by a power law, that is, in the notation of
 (\ref{eq:cond-dist}):
 
 \begin{equation}
@@ -202,25 +196,26 @@ f \left( x \right) = \frac{\alpha-1}{x_{\mbox{min}}} \left( \frac{x}{x_{\mbox{mi
 \label{eq:power-law}
 \end{equation}
 
-Chen et al. (2008, p. 2) notes that the distribution of scaled conditional
-return, \(P(r | r_p)\) "collapses to a universal curve", and this can
-indeed be observed on some time series. Following Chen, we consider a
-long series of the Dow Jones Industrial Average, from 1900 to 2004,
-provided by Williamson (2013). The series is sampled every \(T=2\) days, and
-we use 8 bins of equal size to partition \(r_p\).
+Chen et al. (2008, p. 2) notes that the distribution of scaled
+conditional return, \(P(r | r_p)\) "collapses to a universal curve", and
+this can indeed be observed on some time series. Following Chen, we
+consider a long series of the Dow Jones Industrial Average, from 1900 to
+2004, provided by Williamson (2013). The series is sampled every \(T=2\)
+days, and we use 8 bins of equal size to partition \(r_p\).
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{\# number of bins}
 \NormalTok{nb }\OtherTok{\textless{}{-}} \DecValTok{8}
 \NormalTok{ticker }\OtherTok{\textless{}{-}} \StringTok{\textquotesingle{}djia\textquotesingle{}}
-\NormalTok{r.djia }\OtherTok{\textless{}{-}} \FunctionTok{get.ts}\NormalTok{(ticker, }\AttributeTok{calc=}\StringTok{\textquotesingle{}return\textquotesingle{}}\NormalTok{)}
+\NormalTok{r.djia }\OtherTok{\textless{}{-}} \FunctionTok{get.ts}\NormalTok{(ticker, }\AttributeTok{returns=}\ConstantTok{TRUE}\NormalTok{)}
 \NormalTok{ticker }\OtherTok{\textless{}{-}} \StringTok{\textquotesingle{}qqq\textquotesingle{}}
-\NormalTok{r.QQQ }\OtherTok{\textless{}{-}} \FunctionTok{get.ts}\NormalTok{(ticker, }\AttributeTok{calc=}\StringTok{\textquotesingle{}return\textquotesingle{}}\NormalTok{)}
+\NormalTok{r.QQQ }\OtherTok{\textless{}{-}} \FunctionTok{get.ts}\NormalTok{(ticker,  }\AttributeTok{returns=}\ConstantTok{TRUE}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
-The next function allocate observations \(r_t\) into \(nb\) bins, conditional upon the value of \(|r_{t-1}|\).
+The next function allocate observations \(r_t\) into \(nb\) bins,
+conditional upon the value of \(|r_{t-1}|\).
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -229,8 +224,11 @@ The next function allocate observations \(r_t\) into \(nb\) bins, conditional up
 \end{Highlighting}
 \end{Shaded}
 
-Following the article in reference, we plot the conditional density of return for each bin. The width of the density is positively correlated to the magnitude of \(|r_{t-1}|\),
-although the pattern is more visible for QQQ (as reported in the paper) as for, for example, for DJIA. This is illustrated in the following two figures.
+Following the article in reference, we plot the conditional density of
+return for each bin. The width of the density is positively correlated
+to the magnitude of \(|r_{t-1}|\), although the pattern is more visible
+for QQQ (as reported in the paper) as for, for example, for DJIA. This
+is illustrated in the following two figures.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -244,12 +242,11 @@ although the pattern is more visible for QQQ (as reported in the paper) as for, 
 \includegraphics[width=0.5\linewidth]{figs/condist-plot-1} \includegraphics[width=0.5\linewidth]{figs/condist-plot-2} \caption{Conditional density of QQQ and DJIA return. $r$ is partitioned in 8 bins of equal size, according to the absolute value of return in the previous period.}\label{fig:condist-plot}
 \end{figure}
 
-Using the estimation
-method introduced by Clauset et al. (2009), and considering each bin separately,
-we fit the tail distribution to a power law. The parameters
-\(\alpha_{\text{min}}\) and \(\alpha\) specific to each bin are reported in
-Figure \ref{fig:powerlawplot}.
-The results are consistent with the ones reported by Chen \emph{et al.}
+Using the estimation method introduced by Clauset et al. (2009), and
+considering each bin separately, we fit the tail distribution to a power
+law. The parameters \(\alpha_{\text{min}}\) and \(\alpha\) specific to
+each bin are reported in Figure @ref(fig:powerlawplot). The results are
+consistent with the ones reported by Chen \emph{et al.}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -260,22 +257,22 @@ The results are consistent with the ones reported by Chen \emph{et al.}
 \end{Shaded}
 
 \begin{figure}[H]
-\includegraphics[width=0.7\linewidth,height=0.7\textheight]{figs/powerlawplot-1} \caption{Cumulative density of DJIA return. $r$ is partitioned in 8 bins of equal size, according to the absolute value of return in the previous period. For each bin, the inserted table reports $x_{\text{min}}$ and $\alpha$.}\label{fig:powerlawplot}
+\includegraphics[width=0.7\linewidth,height=0.7\textheight]{figs/powerlawplot-1} \caption{Cumulative density of DJIA return. $r$ is partitioned in 8 bins of equal size, according to the absolute value of return in the previous period. For each bin, the inserted table reports $x_{\text{min}}$ and $\alpha$.}(\#fig:powerlawplot)
 \end{figure}
 
-However, the claim should perhaps not be taken literally: it is not
-hard to identify time series that do not exhibit a "collapse to a
-universal curve". Figure \ref{fig:bnp2}, among many examples, displays the results of the
-same calculation, applied to the BNP (BNP.PA) stock, using daily close
-prices from 2000 to 2013. The conditional scaled tail return for the
-first bin (the bin corresponding to returns of small magnitude in the
-previous time interval) shows a marked difference from the distributions
-of the other bins.
+However, the claim should perhaps not be taken literally: it is not hard
+to identify time series that do not exhibit a "collapse to a universal
+curve". Figure @ref(fig:bnp2), among many examples, displays the results
+of the same calculation, applied to the BNP (BNP.PA) stock, using daily
+close prices from 2000 to 2013. The conditional scaled tail return for
+the first bin (the bin corresponding to returns of small magnitude in
+the previous time interval) shows a marked difference from the
+distributions of the other bins.
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{ticker }\OtherTok{\textless{}{-}} \StringTok{\textquotesingle{}bnp\textquotesingle{}}
-\NormalTok{r.bnp }\OtherTok{\textless{}{-}} \FunctionTok{get.ts}\NormalTok{(ticker, }\AttributeTok{calc=}\StringTok{\textquotesingle{}return\textquotesingle{}}\NormalTok{)}
+\NormalTok{r.bnp }\OtherTok{\textless{}{-}} \FunctionTok{get.ts}\NormalTok{(ticker, }\AttributeTok{returns=}\ConstantTok{TRUE}\NormalTok{)}
 \NormalTok{bins }\OtherTok{\textless{}{-}} \FunctionTok{make.bins}\NormalTok{(r.bnp, }\AttributeTok{NBIN=}\NormalTok{nb, }\AttributeTok{model=}\StringTok{\textquotesingle{}abs\textquotesingle{}}\NormalTok{, params)}
 \end{Highlighting}
 \end{Shaded}
@@ -288,18 +285,22 @@ of the other bins.
 \end{Shaded}
 
 \begin{figure}[H]
-\includegraphics[width=0.7\linewidth,height=0.7\textheight]{figs/bnp2-1} \caption{CDF of BNP (BNP.PA) return. The conditional scaled tail return for the first bin (the bin corresponding to returns of small magnitude in the previous time interval) shows a marked difference from the distributions of the other bins.}\label{fig:bnp2}
+\includegraphics[width=0.7\linewidth,height=0.7\textheight]{figs/bnp2-1} \caption{CDF of BNP (BNP.PA) return. The conditional scaled tail return for the first bin (the bin corresponding to returns of small magnitude in the previous time interval) shows a marked difference from the distributions of the other bins.}(\#fig:bnp2)
 \end{figure}
 
 \hypertarget{relationship-between-the-scaling-factor-and-r_p}{%
-\subsection{\texorpdfstring{Relationship between the scaling factor and \(|r_p|\)}{Relationship between the scaling factor and \textbar r\_p\textbar{}}}\label{relationship-between-the-scaling-factor-and-r_p}}
+\subsection{\texorpdfstring{Relationship between the scaling factor and
+\(|r_p|\)}{Relationship between the scaling factor and \textbar r\_p\textbar{}}}\label{relationship-between-the-scaling-factor-and-r_p}}
 
-For \(r_p\) sufficiently large, there is an apparent linear relationship between \(r_p\) and \(\sigma(r_p)\). This observation is consistent with volatility clustering, and is illustrated by the following calculation, which reproduces Figure 2 of Chen's paper.
+For \(r_p\) sufficiently large, there is an apparent linear relationship
+between \(r_p\) and \(\sigma(r_p)\). This observation is consistent with
+volatility clustering, and is illustrated by the following calculation,
+which reproduces Figure 2 of Chen's paper.
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{ticker }\OtherTok{\textless{}{-}} \StringTok{\textquotesingle{}qqq\textquotesingle{}}
-\NormalTok{p }\OtherTok{\textless{}{-}} \FunctionTok{get.ts}\NormalTok{(ticker, }\AttributeTok{calc=}\StringTok{\textquotesingle{}price\textquotesingle{}}\NormalTok{)}
+\NormalTok{p }\OtherTok{\textless{}{-}} \FunctionTok{get.ts}\NormalTok{(ticker, }\AttributeTok{returns=}\ConstantTok{FALSE}\NormalTok{)}
 \NormalTok{nb }\OtherTok{\textless{}{-}} \DecValTok{8}
 
 \CommentTok{\# sample at T=2}
@@ -328,16 +329,17 @@ For \(r_p\) sufficiently large, there is an apparent linear relationship between
 \begin{figure}
 \centering
 \includegraphics{figs/scaling-plot-1.pdf}
-\caption{\label{fig:scaling-plot}The scaling factor \(\sigma(r_p)\) as a function of \(r_p\). The approximate linear dependency is confirmed by the calculation.}
+\caption{(\#fig:scaling-plot)The scaling factor \(\sigma(r_p)\) as a
+function of \(r_p\). The approximate linear dependency is confirmed by
+the calculation.}
 \end{figure}
 
-Finally, it should be noted that the scaling factor \(\sigma(r_p)\) does not
-transform returns into independent random variables:
-Figure~ \ref{fig:acf} displays
-the autocorrelation of the scaled return and of its absolute value. This
-observation should not come as a surprise, as volatility is commonly
-modeled by an autoregressive process, and not by a function of the
-previous observation alone.
+Finally, it should be noted that the scaling factor \(\sigma(r_p)\) does
+not transform returns into independent random variables: Figure~
+@ref(fig:acf) displays the autocorrelation of the scaled return and of
+its absolute value. This observation should not come as a surprise, as
+volatility is commonly modeled by an autoregressive process, and not by
+a function of the previous observation alone.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -349,10 +351,13 @@ previous observation alone.
 \end{Shaded}
 
 \begin{figure}[H]
-\includegraphics[width=0.5\linewidth]{figs/acf-1} \includegraphics[width=0.5\linewidth]{figs/acf-2} \caption{Autocorrelation of $r_t/\sigma(r_p)$ and $|r_t|/\sigma(r_p)$. QQQ return serie, sampling $T=2$}\label{fig:acf}
+\includegraphics[width=0.5\linewidth]{figs/acf-1} \includegraphics[width=0.5\linewidth]{figs/acf-2} \caption{Autocorrelation of $r_t/\sigma(r_p)$ and $|r_t|/\sigma(r_p)$. QQQ return serie, sampling $T=2$}(\#fig:acf)
 \end{figure}
 
-The effect of scaling can be measured by comparing Figure \ref{fig:acf} to the same calculation, performed on the original return serie. Scaling by \(\sigma(r_p)\) reduces the autocorrelation of absolute return, but does not completely cancel it.
+The effect of scaling can be measured by comparing Figure @ref(fig:acf)
+to the same calculation, performed on the original return serie. Scaling
+by \(\sigma(r_p)\) reduces the autocorrelation of absolute return, but
+does not completely cancel it.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -363,13 +368,16 @@ The effect of scaling can be measured by comparing Figure \ref{fig:acf} to the s
 \end{Shaded}
 
 \begin{figure}[H]
-\includegraphics[width=0.5\linewidth]{figs/acf2-1} \includegraphics[width=0.5\linewidth]{figs/acf2-2} \caption{Autocorrelation of $r_t$ and $|r_t|$. QQQ return serie, sampling $T=2$}\label{fig:acf2}
+\includegraphics[width=0.5\linewidth]{figs/acf2-1} \includegraphics[width=0.5\linewidth]{figs/acf2-2} \caption{Autocorrelation of $r_t$ and $|r_t|$. QQQ return serie, sampling $T=2$}(\#fig:acf2)
 \end{figure}
 
 \hypertarget{conclusion}{%
 \section{Conclusion}\label{conclusion}}
 
-Scaling return series by a factor which is a function of the absolute value of return in the previous period provides a model for ``fat tails,'' but only partially captures the volatility clustering feature of financial time series.
+Scaling return series by a factor which is a function of the absolute
+value of return in the previous period provides a model for ``fat
+tails,'' but only partially captures the volatility clustering feature
+of financial time series.
 
 \hypertarget{bibliography}{%
 \section*{Bibliography}\label{bibliography}}
@@ -378,19 +386,30 @@ Scaling return series by a factor which is a function of the absolute value of r
 \hypertarget{refs}{}
 \begin{CSLReferences}{1}{0}
 \leavevmode\hypertarget{ref-Chen-2008}{}%
-Chen, K., Jayaprakash, C., \& Yuan, B. (2008). {Conditional Probability as a Measure of Volatility Clustering in Financial Time Series}. \emph{Physica A}, 1--5. \url{http://arxiv.org/abs/0503157v2}
+Chen, K., Jayaprakash, C., \& Yuan, B. (2008). {Conditional Probability
+as a Measure of Volatility Clustering in Financial Time Series}.
+\emph{Physica A}, 1--5. \url{http://arxiv.org/abs/0503157v2}
 
 \leavevmode\hypertarget{ref-Clauset2009}{}%
-Clauset, A., Shalizi, C. R., \& Newman, M. E. J. (2009). {Power-law distributions in empirical data}. \emph{SIAM Review}, \emph{51(4)}, 661--703.
+Clauset, A., Shalizi, C. R., \& Newman, M. E. J. (2009). {Power-law
+distributions in empirical data}. \emph{SIAM Review}, \emph{51(4)},
+661--703.
 
 \leavevmode\hypertarget{ref-Cont2001}{}%
-Cont, R. (2001). {Empirical properties of asset returns: stylized facts and statistical issues}. \emph{Quantitative Finance}, \emph{1}, 223--236. \url{http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.16.5992}
+Cont, R. (2001). {Empirical properties of asset returns: stylized facts
+and statistical issues}. \emph{Quantitative Finance}, \emph{1},
+223--236.
+\url{http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.16.5992}
 
 \leavevmode\hypertarget{ref-Gopikrishnana1998}{}%
-Gopikrishnan, P., Meyer, M., Amaral, L. A. N., \& Stanley, H. E. (1998). {Inverse cubic law for the distribution of stock price variations}. \emph{The European Physical Journal B}, \emph{3}, 139--140.
+Gopikrishnan, P., Meyer, M., Amaral, L. A. N., \& Stanley, H. E. (1998).
+{Inverse cubic law for the distribution of stock price variations}.
+\emph{The European Physical Journal B}, \emph{3}, 139--140.
 
 \leavevmode\hypertarget{ref-Williamson2013}{}%
-Williamson, S. H. (2013). \emph{{Daily Closing Values of the DJA in the United States, 1885 to Present}}. \url{http://www.measuringworth.com/DJA/}
+Williamson, S. H. (2013). \emph{{Daily Closing Values of the DJA in the
+United States, 1885 to Present}}.
+\url{http://www.measuringworth.com/DJA/}
 
 \end{CSLReferences}
 

@@ -114,12 +114,32 @@
   \apptocmd{\@title}{\par {\large #1 \par}}{}{}
 }
 \makeatother
-\subtitle{TP-1: Analyse du CAC40}
+\subtitle{TP-1: Analyse de l'indice CAC40}
 \author{}
-\date{\vspace{-2.5em}Février-Mars 2021}
+\date{\vspace{-2.5em}Version: 28 déc. 2021}
 
 \begin{document}
 \maketitle
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(lubridate)}
+\FunctionTok{library}\NormalTok{(Hmisc)}
+\FunctionTok{library}\NormalTok{(tseries)}
+\FunctionTok{library}\NormalTok{(timeSeries)}
+
+\NormalTok{get.src.folder }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{() \{}
+  \FunctionTok{path.expand}\NormalTok{(}\StringTok{"../GP/src"}\NormalTok{)}
+\NormalTok{\}}
+
+\NormalTok{get.data.folder }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{() \{}
+  \FunctionTok{path.expand}\NormalTok{(}\StringTok{"../GP/data"}\NormalTok{)}
+\NormalTok{\}}
+
+\FunctionTok{source}\NormalTok{(}\FunctionTok{file.path}\NormalTok{(}\FunctionTok{get.src.folder}\NormalTok{(), }\StringTok{\textquotesingle{}utils.R\textquotesingle{}}\NormalTok{))}
+\FunctionTok{source}\NormalTok{(}\FunctionTok{file.path}\NormalTok{(}\FunctionTok{get.src.folder}\NormalTok{(), }\StringTok{\textquotesingle{}FileUtils.R\textquotesingle{}}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
 
 \hypertarget{les-donnuxe9es}{%
 \subsection{Les données}\label{les-donnuxe9es}}
@@ -219,9 +239,9 @@ principales}\label{analyse-en-composantes-principales}}
   Effectuer une ACP de la matrice de covariance des rendements
   hebdomadaires
 \item
-  Observer les projections des variables sur les deux premiers vecteurs
-  propres, et tenter de fournir une interprétation économique de ces
-  facteurs.
+  Observer les projections des variables sur les premiers vecteurs
+  propres, et tenter de fournir une interprétation économique de vos
+  observations.
 \end{itemize}
 
 \end{document}
