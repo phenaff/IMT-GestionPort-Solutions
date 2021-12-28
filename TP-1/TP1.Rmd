@@ -1,13 +1,13 @@
 ---
 title: "Gestion de Portefeuille"
-subtitle: 'TP-1: Analyse du CAC40'
-date: "Février-Mars 2021"
+subtitle: 'TP-1: Analyse de l''indice CAC40'
+date: "Version: `r format(Sys.Date(), '%d %b %Y')`"
 output:
-  word_document: default
   pdf_document:
     keep_tex: yes
     fig_caption: yes
     latex_engine: pdflatex
+  word_document: default
 geometry: margin=1in
 header-includes:
 - \usepackage[utf8]{inputenc}
@@ -20,7 +20,7 @@ header-includes:
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-```{r load-libraries, include=FALSE, echo=TRUE}
+```{r load-libraries, include=TRUE, message=FALSE, echo=TRUE}
 library(lubridate)
 library(Hmisc)
 library(tseries)
@@ -110,6 +110,6 @@ Commenter les résultats obtenus.
 ## Analyse en composantes principales
 
 + Effectuer une ACP de la matrice de covariance des rendements hebdomadaires
-+ Observer les projections des variables sur les deux premiers vecteurs propres, et tenter de fournir une interprétation économique de ces facteurs.
++ Observer les projections des variables sur les premiers vecteurs propres, et tenter de fournir une interprétation économique de vos observations.
 
 
