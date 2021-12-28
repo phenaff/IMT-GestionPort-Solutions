@@ -1,7 +1,7 @@
 ---
 title: "Manipulation des series chronologiques"
 author: "P. Hénaff"
-date: "2/2021"
+date: "Version: `r format(Sys.Date(), '%d %b %Y')`"
 output: pdf_document
 
 header-includes:
