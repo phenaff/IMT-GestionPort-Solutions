@@ -28,7 +28,8 @@ header-includes:
   - \usepackage{xcolor}
 
   
-bibliography: ../library.bib
+bibliography: ../../library.bib
+csl: ../../apa.csl
 ---
 
 ```{r setup, include=FALSE}

@@ -4,8 +4,6 @@ output:
     keep_tex: true
     fig_caption: yes
     latex_engine: pdflatex
-    includes:
-      in_header: preamble.tex
 geometry: margin=1in
 
 bibliography: ../../library.bib
