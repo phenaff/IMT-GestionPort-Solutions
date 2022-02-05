@@ -2,8 +2,8 @@
 title: "Gestion de Portefeuille"
 subtitle: "TP-2: Modèle de Markowitz et extensions"
 author: Patrick Hénaff
-date: "Février-Mars 2020"
-output: 
+date: "Version: `r format(Sys.Date(), '%d %b %Y')`"
+output:
   pdf_document:
     keep_tex: true
     fig_caption: yes
@@ -45,7 +45,7 @@ library(quadprog)
 ```{r, eval=TRUE, echo=TRUE, warning=FALSE}
 daily.ret.file <- "./daily.ret.rda"
 load(daily.ret.file)
-kable(table.Stats(daily.ret), "latex", booktabs=T) %>% 
+kable(table.Stats(daily.ret), "latex", booktabs=T) %>%
   kable_styling(latex_options=c("scale_down", "HOLD_position"))
 ```
 
@@ -86,7 +86,7 @@ Sigma <- cov(daily.ret) * 252
 # rendement espéré arbitraire
 mu.star <- .07
 A.sum <- matrix(mu-mu.free, ncol=1)
-A.mat <- cbind(A.sum, 
+A.mat <- cbind(A.sum,
                diag(n))
 b <- c(mu.star-mu.free, rep(0, n))
 qp <- solve.QP(2*Sigma, rep(0,n), A.mat, b, meq=1)
@@ -124,7 +124,7 @@ $$
 max.weight <- .2
 A.weight <- matrix(max.weight, nrow=n, ncol=n)
 diag(A.weight) <- max.weight-1
-A.mat <- cbind(A.sum, 
+A.mat <- cbind(A.sum,
                A.weight,
                diag(n))
 b <- c(mu.star-mu.free, rep(0,n), rep(0, n))
