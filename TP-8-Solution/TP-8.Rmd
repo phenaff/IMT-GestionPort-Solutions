@@ -260,7 +260,7 @@ vx=as.numeric(c(rep(1000000,6), 10000000)))
 
 kable(df.flow, format="latex", booktabs=T,col.names = c("Date", "Montant"), format.args=list(big.mark=",", scientific=F, booktabs=T),
       caption="Echéancier du passif à financer")%>%
-  kable_styling(position="center")
+  kable_styling(position="center", latex_options="HOLD_position")
 
 ```
 
@@ -288,7 +288,7 @@ for(i in seq(nrow(df.o2))) {
   df.o2$PV01[i] <- res[3]
 }
 ```
-Les premiers résultats sont résumés ci-dessous:
+Les premiers résultats sont résumés ci-dessous. On ne retient bien sûr que les obligations qui ne sont pas arrivées à maturité.
 
 ```{r, echo=F}
 idx <- which(df.o2$DP > 0)
@@ -313,7 +313,7 @@ for(i in seq(nrow(df.immu))) {
 }
 ```
 
-Les valeurs à reproduire avec le portefeuille de titres sont:
+Les valeurs à reproduire à l'horizon avec le portefeuille de titres sont:
 
 ```{r, echo=F}
 kable(matrix(c(P.L, PV01.L), nrow=1),
