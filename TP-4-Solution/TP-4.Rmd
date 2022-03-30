@@ -131,7 +131,7 @@ w <- solve(Sigma, mu)
 w <- w / (sum(w+abs(w)) / 2)
 ```
 
-Le tableau ci-dessous résume les calculs. On constate en premier lieu que le poids calculé par la formule de Stevens ($w^*$) coincide comme attendu avec le résultat de l'optimisation.
+Le tableau ci-dessous résume les calculs. On constate en premier lieu que le poids calculé par la formule de Stevens ($w^*$) coincide comme attendu avec le résultat de l'optimisation ($w$).
 On constate ensuite qu'il existe des actifs presque redondants: on peut répliquer RUA à l'aide d'un portefeuille composé des autres actifs, avec un ecart-type résiduel de 0.3\%. Pour RUA et GSPC, une différence de rendement entre le titre et le portefeuille de couverture de 0.01\% motive un poids de l'ordre de 30\% dans le portefeuille optimal. Ceci illustre l'extrême sensibilité du portefeuille optimal aux estimations de rendement et de covariance.
 
 
@@ -172,6 +172,8 @@ kbl(pc.res, booktabs=T, format="latex", digits=4) %>%
   pack_rows("Valeurs propres", 11,11)
 ```
 
-Le vecteur propre 9 revèle une possibilité d'arbitrage entre GSPC et RUA. Effectivement, ces deux titres assez sont fortement représentés dans le portefeuille optimal.
-
+Le vecteur propre 9 revèle une possibilité d'arbitrage entre GSPC et RUA. 
+Au moins en théorie, la stratégie consiste à construire un portefeuille contenant une position de spread GSPC/RUA, immunisée par rapport à tous les facteurs.
+Comme ces deux actifs sont par ailleurs très corrélés, on devrait observer une dynamique stationnaire sur ce spread. En pratique, les frais de transaction rendent ce genre d'arbitrages délicats à mettre en oeuvre.
+L'existence de ce quasi-arbitrage, même s'il reste théorique, explique les pondérations de GSPC et de RUA dans le portefeuille optimal.
 

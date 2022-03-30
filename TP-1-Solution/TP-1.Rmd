@@ -3,7 +3,7 @@ title: "Gestion de Portefeuille"
 subtitle: "TP-1: Analyse du CAC40"
 date: "Version: `r format(Sys.Date(), '%d %b %Y')`"
 
-output: 
+output:
   pdf_document:
     keep_tex: true
     fig_caption: yes
@@ -57,14 +57,14 @@ tickers <- NULL
   ts.all <- get.all.ts(
     'CAC40', tickers, returns = TRUE,
     dt.start = dmy('01Jul2007'), combine = T)
-  
+
   # remove Valeo - bad data
   ts.all <- ts.all[,-17]
-  
+
   # keep good data window
-  ts.all <- window(ts.all, dmy('01Jul2007'), 
+  ts.all <- window(ts.all, dmy('01Jul2007'),
                    dmy('01Jan2009'))
-  
+
   # merge with cac40 index
   cac.ret <- get.ts('fchi', 'CAC40', returns = T)
 
@@ -78,10 +78,10 @@ plot(ts.all[, c(1,2,3)], main='Rendement journalier')
 
 Puis on filtre les points suspects: rendements supérieur à 8 s.d.
 
-```{r, filter, warning=FALSE, echo=TRUE} 
+```{r, filter, warning=FALSE, echo=TRUE}
   # flag bad data points: > * \sigma
   good.limit <- 8*apply(ts.all, 2, sd)
-  
+
   ts.bad <- ts.all*FALSE
   for(j in seq(ncol(ts.bad))) {
     ts.bad[,j] <- abs(ts.all[,j]) > good.limit[j]
@@ -91,10 +91,10 @@ Puis on filtre les points suspects: rendements supérieur à 8 s.d.
 ```
 
 Finalement, on calcule les rendements hebdomadaires:
-  
-```{r, weekly-return, echo=TRUE} 
+
+```{r, weekly-return, echo=TRUE}
   # aggregate returns by week
-  by <- timeSequence(from=start(ts.all), 
+  by <- timeSequence(from=start(ts.all),
                      to=end(ts.all), by='week')
   ts.all.weekly <- aggregate(ts.all, by, sum)
 
@@ -107,9 +107,9 @@ plot(ts.index, main='Weekly return')
 
 ## Calcul de correlation
 
-+ Calculer la matrice de corrélation des actions de l\'indice. 
++ Calculer la matrice de corrélation des actions de l\'indice.
 
-+ Rechercher des actions fortement corrélées et d'autres qui semblent indépendantes. 
++ Rechercher des actions fortement corrélées et d'autres qui semblent indépendantes.
 Justifier ces observations en considérant la nature des entreprises.
 
 + Choisir 3 titres, et reproduire la figure 3.5, page 35 du manuel de B. Pfaff.
@@ -153,7 +153,7 @@ res = data.frame(stock.1=row.names[hi.cor$position[,1]],
                  corr=hi.cor$values)
 ```
 ```{r}
-kbl(res, format='latex', booktabs=T, col.names=c("", "", "Corrélation"), 
+kbl(res, format='latex', booktabs=T, col.names=c("", "", "Corrélation"),
     caption="Les 10 corrélations les plus fortes du CAC 40") %>%
   kable_styling(latex_options="HOLD_position")
 ```
@@ -171,14 +171,16 @@ kbl(res, format='latex', booktabs=T, caption="Les 10 corrélations les plus faib
   kable_styling(latex_options="HOLD_position")
 ```
 
-Corrélations glissantes - secteur bancaire
+### Corrélations glissantes
 
-On observe une décorrélation de SOCGEN durant la crise financière du fait de sa plus grande exposition aux activités de marché.
+On choisit d'observer le comportement des titres du secteur bancaire, et
+on observe une décorrélation de SOCGEN durant la crise financière, du
+fait de sa plus grande exposition aux activités de marché.
 
 ```{r}
 cor.calc <- function(x, pairs){
 cor(x)[pairs]
-} 
+}
 rc.tickers <- c("bnp.pa", "gle.pa", "aca.pa")
 comb <- t(combn(3,2))
 CAC.ts <- as.zoo(ts.all)[, rc.tickers]
@@ -188,13 +190,18 @@ foo <- function(x) {
   }
 
 colnames(rcor) <- apply(comb,1,foo)
- 
+
 index(rcor) = as.Date(index(rcor))
 plot(rcor,main = "Corrélations dans le secteur bancaire",xlab = "Date")
 ```
 
 
 ## Analyse en composantes principales
+
++ Effectuer une ACP de la matrice de covariance des rendements hebdomadaires
++ Observer les projections des variables sur les premiers vecteurs propres, et tenter de fournir une interprétation économique de vos observations.
+
+### Solution
 
 ```{r}
 nlargest <- function(m, n, sim = TRUE) {
@@ -227,7 +234,7 @@ barplot(pc.var, ylab='% Variance')
 
 
 Les actions du CAC40 sont assez uniformement exposées au premier
-facteur, que l'on peut de ce fait interpréter comme le "marché" 
+facteur, que l'on peut de ce fait interpréter comme le "marché"
 
 ```{r, fig.cap="Projection des rendements hebdomadaires sur le 4 premières composantes principales", echo=F}
 melted <- melt(pca$rotation[,1:4])
@@ -238,9 +245,9 @@ melted <- melt(pca$rotation[,1:4])
     facet_wrap(~Var2)
 ```
 
-  
+
 Cette interprétation est validée en construisant une serie
-chronologique du facteur 1 et en la comparant à l'indice lui même 
+chronologique du facteur 1 et en la comparant à l'indice lui même
 
 ```{r, echo=TRUE}
   pc.1 <- ts.stocks %*% pca$rotation[,1]
@@ -261,7 +268,7 @@ fortement sur la deuxième composante principale:
 
 ```{r, echo=TRUE}
 v <- pca$rotation[,2]
-kbl(v[order(abs(v), decreasing=T)][1:10], format="latex", booktabs=T, 
+kbl(v[order(abs(v), decreasing=T)][1:10], format="latex", booktabs=T,
     caption="Projection des rendements sur la 2ème CP", col.names="Corrélation") %>%
 kable_styling(latex_options="HOLD_position")
 ```
@@ -270,6 +277,3 @@ On peut interpréter ce deuxième axe comme un facteur de rendement
 spécifique au
 secteur "bancassurance", qui est un élément original du paysage
 bancaire Français.
-
-
-

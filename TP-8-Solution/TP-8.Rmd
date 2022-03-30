@@ -151,7 +151,7 @@ for(i in seq(nrow(df.o1))) {
 }
 ```
 
-Les prix "coupon couru inclus" (DP) et les PV01 des obligations à la date de calcul sont résumées dans le tableau ci-dessous.
+Les prix "coupon couru inclus" (DP) et les PV01 de quelques obligations à la date de calcul sont résumées dans le tableau ci-dessous. Le nominal de chaque titre est 100 EUR.
 
 ```{r, echo=F}
 kable(df.o1[1:3,c("dtE", "dtM", "Coupon", "DP", "PV01")],
@@ -241,7 +241,7 @@ PV01.A <- sum(df.sol[,"PV01"]*df.sol[,"sol"])
 df.at.immu <- data.frame(P=c(P.A, P.L), PV01=c(PV01.A, PV01.L))
 rownames(df.at.immu)=c("Actif", "Passif")
 kable(df.at.immu, format="latex", col.names = c("Valeur", "PV01"), booktabs=T, format.args = list(big.mark=",", booktabs=T))%>%
-  kable_styling(position="center")
+  kable_styling(position="center", latex_options = "HOLD_position")
 ```
 
 # Partie 2: Adossement flux à flux et immunisation
@@ -388,16 +388,16 @@ res <- lp(direction="max", objective.in=obj,
 
 ## Solution
 
-Le coût de la solution est `r format(sum(df.o1$DP * head(res$solution, nb.bonds)), scientific=F, big.mark=",")` euros.
+Le coût de la solution est `r format(sum(df.o1$DP * head(res$solution, nb.bonds)), scientific=F, big.mark=",")` euros. La solution est obtenue sans réinvestir de cash d'une période sur l'autre.
 
 
 ```{r, echo=T}
 idx <- res$solution > 0
-df.sol <- df.o2[idx,c("Nom", "dtE", "dtM", "Coupon", "y")]
+df.sol <- df.o2[idx,c("Nom", "dtE", "dtM", "Coupon")]
 df.sol$Solution <- res$solution[idx]
 kable(df.sol, format="latex", booktabs=T,
       format.args = list(big.mark=",", booktabs=T),
-      caption="Adossement flux à flux et immunisation.")%>%
+      caption="Adossement flux à flux et immunisation.Encours en nombre de titres de 100 EUR de nominal.")%>%
   kable_styling(position="center", latex_options = "HOLD_position")
 
 ```
@@ -446,11 +446,11 @@ Le coût de la solution est `r format(sum(df.o1$DP * head(res.2$solution, nb.bon
 
 ```{r, echo=T}
 idx <- res.2$solution > 0
-df.sol <- df.o1[idx,c("Nom", "dtE", "dtM", "Coupon", "y")]
+df.sol <- df.o1[idx,c("Nom", "dtE", "dtM", "Coupon")]
 df.sol$Solution <- res.2$solution[idx]
 kable(df.sol, format="latex", booktabs=T,
       format.args = list(big.mark=",", booktabs=T),
-      caption="Adossement flux à flux et immunisation pour un cout minimum à la date de calcul.")%>%
+      caption="Adossement flux à flux et immunisation pour un cout minimum à la date de calcul. Encours en nombre de titres de 100 EUR de nominal.")%>%
   kable_styling(position="center", latex_options = "HOLD_position")
 
 ```

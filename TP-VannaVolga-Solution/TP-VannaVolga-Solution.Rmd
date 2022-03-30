@@ -379,7 +379,7 @@ Bin.prix.smile <- exp(-r*T)*integrate(
   lower=Strike, upper=700)$value
 ```
 
-Finalement, on obtient les estimations suivantes:
+Finalement, on obtient les estimations suivantes, pour un payoff de 100 EUR:
 
 - Prix Black-Scholes: `r round(Bin.BS, 2)`
 - Prix avec correction Vanna-Volga: `r round(Bin.prix.VV, 2)`

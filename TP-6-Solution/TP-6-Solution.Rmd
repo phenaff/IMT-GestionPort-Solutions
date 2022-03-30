@@ -337,16 +337,17 @@ w <- as.matrix(w, ncol=1)
 risk <- round(100*sqrt(t(w) %*% cov.A %*% w),2)
 ```
 
-```{r, echo=FALSE, fig.cap="Portefeuille Tangent (covariance selon facteurs ACP)"}
+```{r, echo=FALSE, fig.cap="Portefeuille Tangent (covariance selon facteurs ACP). L'allocation est beaucoup plus diversifiée qu'en utilisant la covariance historique"}
 barplot(100*t(w),las = 2)
 legend("top", as.expression(bquote(sigma *"="* .(risk))))
 ```
+A titre de curiosité, on compare ci-dessous l'évolution d'AAPL et du premier facteur issu de l'ACP. Sans surprise, une entreprise à très forte capitalisation telle que AAPL suit globalement  l'indice de marché.
 
 ```{r, echo=FALSE, fig.cap="Rendement du facteur 1 et d'AAPL"}
 f.ret.ACP <- -f.ret
 plot(f.ret.ACP[,1]/colSds(f.ret.ACP[,1]), col='blue')
 lines(ts.r.A[,"aapl"]/colSds(ts.r.A[,"aapl"]), col='red')
-legend("topright", legend=c("Facteur 1 F-F", "AAPL"), col=c("blue", "red"), lty=c(1,1))
+legend("topright", legend=c("Facteur 1 (ACP)", "AAPL"), col=c("blue", "red"), lty=c(1,1))
 ```
 
 
@@ -423,27 +424,27 @@ w <- as.matrix(w, ncol=1)
 risk <- round(100*sqrt(t(w) %*% cov.A %*% w),2)
 ```
 
-```{r, echo=FALSE, fig.cap="Portefeuille Tangent (covariance selon facteur F-F)"}
+```{r, echo=FALSE, fig.cap="Portefeuille Tangent (covariance selon facteur F-F). On obtient la même diversification qu'avec une matrice de covariance issue de l'ACP"}
 barplot(100*t(w),las = 2)
 legend("top", as.expression(bquote(sigma *"="* .(risk))))
 ```
 
-Comparaison des résidus du modèle ACP et FF: résultats globalement comparables.
+Pour évaluer les mérites respectifs des facteurs issus de l'ACP et des facteurs FF, on représente ci-dessous la correspondance entre les résidus des regressions des rendements sur les deux types de facteurs. Les résultats sont globalement comparables.
 
-```{r, echo=FALSE}
-plot(cov.U.ACP, cov.U.FF)
+```{r, echo=FALSE, fig.cap="Résidus des modèles FF et ACP. Chaque point représent un titre, avec en abscisse le résidu du modèle ACP, et en ordonnée le résidu du modèle FF. On observe une cohérence entre les deux modèles", fig.pos='h'}
+plot(cov.U.ACP, cov.U.FF, xlab="Résidu ACP", ylab="Résidu Fama-French")
 ```
 
 
-Comparaison entre le premier facteur F-F et le titre AAPL.
+Comme précédement, on observe que le titre AAPL est globalement cohérent avec les mouvements du premier facteur de FF.
 
 ```{r, echo=FALSE, fig.cap="Rendement du facteur Marché de F-F et d'AAPL"}
 plot(ts.r.A[,"aapl"], col='red')
 lines(f.ret[,1], col='blue')
-legend("topright", legend=c("AAPL", "Facteur 1 F-F"), col=c("red", "blue"), lty=c(1,1))
+legend("topright", legend=c("AAPL", "Facteur 1 (F-F)"), col=c("red", "blue"), lty=c(1,1))
 ```
 
-On note une cohérence remarquable entre le facteur 1 issu de l'ACP et le facteur "marché" de Fama-French.
+Finalement, on note une cohérence remarquable entre le facteur 1 issu de l'ACP et le facteur "marché" de Fama-French.
 
 ```{r, echo=FALSE, fig.cap="Facteur 1 statistique et facteur marché de Fama-French"}
 plot(f.ret.ACP[,1]/colSds(f.ret.ACP[,1]), col='blue')
