@@ -475,7 +475,7 @@ Les densités en $T$ selon les deux modèles montrent que la probabilité d'une 
 ```{r, echo=FALSE}
   cl <- c('red', 'blue')
 
-  plot(KRange, p[,1], main='Densité calculée à partir du smile de volatilité', type='l', xlab='Strike', ylab='p(K)', col=cl[1], ylim=c(min(p), max(p)))
+  plot(KRange, p[,1], main='Densité calculée à partir du smile de volatilité', type='l', xlab="S(T)", ylab="p(S(T))", col=cl[1], ylim=c(min(p), max(p)))
   lines(KRange, y=p[,2], type='l', lwd=3, col=cl[2])
 
   legend('topright', c("BS", "FD"), lty=c(1,15), col=cl)
